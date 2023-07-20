@@ -39,7 +39,7 @@ void *checkRegion(void *arg){
     // Iterate over the sub-grid
     for (int i = rowStart; i < rowStart + 3; i++)
     {
-        for (int j = colStart; i < colStart +3; j++)
+        for (int j = colStart; j < colStart +3; j++)
         {
             int num = sudoku[i][j];
             if (seen[num] == 1)
