@@ -27,6 +27,75 @@ typedef struct{
     
 }parameters;
 
-//declare the threads
-pthread_t col_thread, row_thread, first_thread, second_thread, third_thread, fourth_thread, fifth_thread, sixth_thread, seventh_thread, eighth_thread, ninth_thread;
+//Check if a sub-grid is valid (3x3)
+void *checkRegion(void *arg){
+    parameters *param = (parameters *)arg;
+    int row = param->row;
+    int col = param->column;
+    int rowStart = row * 3;
+    int colStart = col * 3;
+    int seen[10] = {0};
 
+    // Iterate over the sub-grid
+    for (int i = rowStart; i < rowStart + 3; i++)
+    {
+        for (int j = colStart; i < colStart +3; j++)
+        {
+            int num = sudoku[i][j];
+            if (seen[num] == 1)
+            {
+                pthread_exit(NULL); // If a number is repeated, region is invalid
+            }
+            seen[num] = 1;
+        }
+        
+    }
+    // If the loop completes the region is valid
+    valid[row * 3 + col] = 1;
+    pthread_exit(NULL);
+}
+
+int main(){
+    //Array to hold the worker threads IDs
+    pthread_t threads[11];
+
+    //Create worker threads to check each region
+    parameters params[11] = {
+        {0, 0}, {0, 1}, {0, 2},
+        {1, 0}, {1, 1}, {1, 2},
+        {2, 0}, {2, 1}, {2, 2}
+    };
+
+    for (int i = 0; i < 9; i++)
+    {
+        pthread_create(&threads[i], NULL, checkRegion, (void *)&params[i]);
+    }
+
+    // Wait for threads to complete
+    for (int i = 0; i < 9; i++)
+    {
+        pthread_join(threads[i], NULL);
+    }
+    
+    int isValid = 1;
+    for (int i = 0; i < 9; i++)
+    {
+        if (valid[i] == 0)
+        {
+            isValid = 0;
+            break;
+        }
+        
+    }
+    
+    //sends the Output
+    if (isValid)
+    {
+        printf("Sudoku Puzzle is Valid\n")
+    }
+    else{
+        printf("Sudoku Puzzle is Not Valid!\n")
+    }
+    
+    return 0;
+}
