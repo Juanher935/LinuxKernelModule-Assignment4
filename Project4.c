@@ -91,10 +91,10 @@ int main(){
     //sends the Output
     if (isValid)
     {
-        printf("Sudoku Puzzle is Valid\n")
+        printf("Sudoku Puzzle is Valid\n");
     }
     else{
-        printf("Sudoku Puzzle is Not Valid!\n")
+        printf("Sudoku Puzzle is Not Valid!\n");
     }
     
     return 0;
